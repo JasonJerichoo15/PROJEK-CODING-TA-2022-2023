@@ -1,0 +1,55 @@
+import logging
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext
+
+# Konfigurasi log untuk melacak pesan kesalahan
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
+# Inisialisasi bot
+updater = Update(token='6796426804:AAHyk7I6y0r17djbRb39kN4Fz9chDMZzFpY', use_context=True)
+dispatcher = updater.dispatcher
+
+# Fungsi untuk memulai permainan Tic Tac Toe
+def start(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("Halo! Mari kita main Tic Tac Toe. Kirim /tictactoe untuk memulai permainan.")
+
+# Fungsi untuk memulai permainan Tic Tac Toe
+def tictactoe(update: Update, context: CallbackContext) -> None:
+    board = [[' ' for _ in range(3)] for _ in range(3)]  # Inisialisasi papan permainan
+    display_board(update, board)
+
+# Fungsi untuk menampilkan papan permainan
+def display_board(update: Update, board) -> None:
+    message = ""
+    for row in board:
+        message += " | ".join(row) + "\n"
+        message += "---------\n"
+    update.message.reply_text(message)
+
+# Fungsi untuk menangani langkah pemain
+def make_move(update: Update, context: CallbackContext) -> None:
+    # Fungsi ini masih perlu diperbaiki sesuai dengan kebutuhan
+    pass
+
+# Fungsi utama untuk menjalankan bot
+def main() -> None:
+    # Menambahkan handler untuk perintah /start
+    start_handler = CommandHandler('start', start)
+    dispatcher.add_handler(start_handler)
+
+    # Menambahkan handler untuk perintah /tictactoe
+    tictactoe_handler = CommandHandler('tictactoe', tictactoe)
+    dispatcher.add_handler(tictactoe_handler)
+
+    # Menambahkan handler untuk menangani langkah pemain
+    make_move_handler = MessageHandler(filter.text & ~filters.command, make_move)
+    dispatcher.add_handler(make_move_handler)
+
+    # Memulai bot
+    updater.start_polling()
+
+    # Menjalankan bot sampai pengguna menekan Ctrl+C
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
